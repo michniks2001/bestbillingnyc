@@ -7,21 +7,24 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { 
-  IconFileInvoice, 
-  IconChartBar, 
-  IconClipboardList, 
+import {
+  IconFileInvoice,
+  IconChartBar,
+  IconClipboardList,
   IconReportMoney,
   IconShieldCheck,
-  IconUsers,
-  IconCertificate,
-  IconDeviceLaptop
+  IconUserCircle,
+  IconUser,
+  IconCertificate, 
+  IconMailFilled,
+  IconDeviceLaptop,
+  IconPhone,
+  IconMessageCircle,
 } from "@tabler/icons-react";
 import CenterUnderline from "@/fancy/components/text/underline-center";
 import { useState } from "react"
-
 
 // Custom animation component that animates when scrolled into view
 function AnimateOnScroll({ children, className, delay = 0, direction = "up" }) {
@@ -104,36 +107,92 @@ export default function Home() {
     phone: "",
     message: ""
   });
+  
   const [formStatus, setFormStatus] = useState({
     isSubmitting: false,
     isSubmitted: false,
     error: null
   });
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
+  const [captchaToken, setCaptchaToken] = useState(null);
+  
+  // Load reCAPTCHA v3 script
+  useEffect(() => {
+    // Check if script is already loaded
+    if (window.grecaptcha) {
+      return;
+    }
+    
+    // Create a global callback function
+    window.onRecaptchaLoad = () => {
+      console.log('reCAPTCHA loaded successfully');
+    };
+    
+    // Load the reCAPTCHA v3 script
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}&onload=onRecaptchaLoad`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+    
+    return () => {
+      // Clean up
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+      delete window.onRecaptchaLoad;
+    };
+  }, []);
+  
+  // Execute reCAPTCHA and get token
+  const executeRecaptcha = async () => {
+    // Wait for grecaptcha to be available
+    if (!window.grecaptcha || !window.grecaptcha.execute) {
+      // If not available yet, wait a bit and try again
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // If still not available, throw error
+      if (!window.grecaptcha || !window.grecaptcha.execute) {
+        throw new Error('reCAPTCHA not loaded properly. Please refresh the page and try again.');
+      }
+    }
+    
+    try {
+      return await window.grecaptcha.execute(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, 
+        { action: 'submit_form' }
+      );
+    } catch (error) {
+      console.error('reCAPTCHA execution error:', error);
+      throw new Error('Failed to verify you are not a robot. Please try again.');
+    }
   };
-
+  
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus({ isSubmitting: true, isSubmitted: false, error: null });
     
     try {
-      // console.log("Submitting form data:", formData);
+      // Get reCAPTCHA token
+      const token = await executeRecaptcha();
       
-      // Send the form data to the API endpoint
+      // Send the form data to the API endpoint with the captcha token
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          'g-recaptcha-response': token
+        }),
       });
 
       const result = await response.json();
@@ -156,7 +215,7 @@ export default function Home() {
       });
     }
   };
-
+  
   // Function to handle smooth scrolling
   const scrollToSection = (e, sectionId) => {
     e.preventDefault();
@@ -201,7 +260,7 @@ export default function Home() {
     {
       title: "Patient Billing Support",
       description: "Provide excellent customer service to patients with questions about their medical bills.",
-      icon: <IconUsers size={24} stroke={1.5} />,
+      icon: <IconUser size={24} stroke={1.5} />,
     },
     {
       title: "Credentialing Services",
@@ -436,63 +495,94 @@ export default function Home() {
                     <p>We&apos;ll get back to you as soon as possible.</p>
                   </div>
                 ) : (
-                  <form className="space-y-4" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div className="space-y-2">
+                      <Label htmlFor="name" className="block mb-1.5 text-sm font-medium">Name</Label>
+                      <div className="relative">
                         <Input 
                           id="name" 
-                          placeholder="Your Name" 
+                          name="name" 
+                          placeholder="Your name" 
+                          required 
                           value={formData.name}
-                          onChange={handleInputChange}
-                          required
+                          onChange={handleChange}
+                          className="pl-10 h-11"
                         />
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                          <IconUserCircle size={20} />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="block mb-1.5 text-sm font-medium">Email</Label>
+                      <div className="relative">
                         <Input 
                           id="email" 
+                          name="email" 
                           type="email" 
-                          placeholder="Your Email" 
+                          placeholder="Your email" 
+                          required 
                           value={formData.email}
-                          onChange={handleInputChange}
-                          required
+                          onChange={handleChange}
+                          className="pl-10 h-11"
                         />
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                          <IconMailFilled size={20} />
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input 
-                        id="phone" 
-                        placeholder="Your Phone Number" 
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                      />
+                      <Label htmlFor="phone" className="block mb-1.5 text-sm font-medium">Phone</Label>
+                      <div className="relative">
+                        <Input 
+                          id="phone" 
+                          name="phone" 
+                          placeholder="Your phone number" 
+                          required 
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="pl-10 h-11"
+                        />
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                          <IconPhone size={20} />
+                        </div>
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <textarea
-                        id="message"
-                        className="w-full min-h-[100px] p-3 border rounded-md"
-                        placeholder="Tell us about your practice and needs"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        required
-                      ></textarea>
+                      <Label htmlFor="message" className="block mb-1.5 text-sm font-medium">Message</Label>
+                      <div>
+                        <textarea 
+                          id="message" 
+                          name="message" 
+                          rows={4} 
+                          placeholder="How can we help you?" 
+                          required 
+                          value={formData.message}
+                          onChange={handleChange}
+                          className="w-full rounded-md border border-gray-300 p-3"
+                        />
+                      </div>
                     </div>
-                    <Button 
-                      type="submit" 
-                      className="bg-[#0a2351] hover:bg-[#0a2351] text-white hover:translate-y-[2px] px-6 py-3 w-full cursor-pointer rounded-md shadow-md transition-all duration-300 font-medium"
-                      disabled={formStatus.isSubmitting}
-                    >
-                      {formStatus.isSubmitting ? "Sending..." : "Send Message"}
-                    </Button>
+                    
                     {formStatus.error && (
-                      <div className="text-red-500 text-sm mt-2">
+                      <div className="bg-red-50 text-red-800 p-4 rounded-md">
                         {formStatus.error}
                       </div>
                     )}
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-[#0a2351] hover:bg-[#0a2351] hover:translate-y-[2px] text-white py-3 rounded-md transition-all duration-300 font-medium"
+                      disabled={formStatus.isSubmitting}
+                    >
+                      {formStatus.isSubmitting ? "Sending..." : "Request Consultation"}
+                    </Button>
+                    
+                    <div className="text-xs text-gray-500 text-center mt-2">
+                      This site is protected by reCAPTCHA and the Google
+                      <a href="https://policies.google.com/privacy" className="text-blue-600 hover:underline"> Privacy Policy</a> and
+                      <a href="https://policies.google.com/terms" className="text-blue-600 hover:underline"> Terms of Service</a> apply.
+                    </div>
                   </form>
                 )}
               </div>
