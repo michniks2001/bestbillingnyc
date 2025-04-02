@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-export async function POST(req: Request) {
+export async function POST(req) {
   if (req.method !== "POST") {
     return new Response(
       JSON.stringify({ message: "Only POST requests allowed" }),
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   const data = await req.json();
   const { token } = data;
-  const secretKey: string | undefined = process.env.RECAPTCHA_SECRET_KEY;
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
   if (!token) {
     return new Response(JSON.stringify({ message: "Token not found" }), {
