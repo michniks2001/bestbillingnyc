@@ -427,13 +427,13 @@ export default function Home() {
             {[
               {
                 quote: "Best Billing Co. has transformed our practice's financial performance. Their attention to detail and proactive approach has significantly increased our collections.",
-                author: "Brian Popovsky, MSPT",
+                author: "Brian Popovsky, DPT",
                 position: "Physical Therapy"
               },
               {
                 quote: "Since partnering with Best Billing Co., we've seen a 30% reduction in claim denials and a 25% increase in revenue. Their team is responsive, professional, and truly cares about our success.",
                 author: "Mikhail Shapiro, DO",
-                position: "Internal Medicine"
+                position: "Physical Medicine and Rehabilitation"
               }
             ].map((testimonial, index) => (
               <AnimateOnScroll key={index} delay={index * 0.2} direction={index % 2 === 0 ? "left" : "right"}>
