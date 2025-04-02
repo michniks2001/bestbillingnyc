@@ -264,7 +264,7 @@ export default function Home() {
         <div className="container mx-auto max-w-5xl px-4 flex flex-col md:flex-row items-center py-20">
           <AnimateOnScroll className="md:w-1/2 mb-10 md:mb-0" direction="left">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Professional Medical Billing Solutions</h1>
-            <p className="text-xl mb-8">Maximize your practice's revenue with our expert medical billing services.</p>
+            <p className="text-xl mb-8">Maximize your practice&apos;s revenue with our expert medical billing services.</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 className="bg-white hover:bg-white text-[#0a2351] hover:translate-y-[2px] px-6 py-3 text-lg cursor-pointer rounded-md shadow-md transition-all duration-300 font-medium"
@@ -332,7 +332,7 @@ export default function Home() {
                 With over 20 years of experience in the healthcare industry, our team of certified billing specialists understands the complexities of medical billing and stays up-to-date with the latest regulations and coding requirements.
               </p>
               <p className="text-lg text-gray-700">
-                We pride ourselves on our attention to detail, personalized service, and commitment to maximizing your practice's financial performance.
+                We pride ourselves on our attention to detail, personalized service, and commitment to maximizing your practice&apos;s financial performance.
               </p>
             </AnimateOnScroll>
             <AnimateOnScroll className="md:w-1/2" direction="right" delay={0.2}>
@@ -433,7 +433,7 @@ export default function Home() {
                 {formStatus.isSubmitted ? (
                   <div className="bg-green-50 text-green-800 p-4 rounded-md mb-4">
                     <p className="font-medium">Thank you for your request!</p>
-                    <p>We'll get back to you as soon as possible.</p>
+                    <p>We&apos;ll get back to you as soon as possible.</p>
                   </div>
                 ) : (
                   <form className="space-y-4" onSubmit={handleSubmit}>
