@@ -380,7 +380,7 @@ export default function Home() {
               <AnimateOnScroll key={index} delay={index * 0.2} direction={index % 2 === 0 ? "left" : "right"}>
                 <Card className="shadow-lg">
                   <CardContent className="pt-6">
-                    <p className="text-gray-700 italic mb-4">"{testimonial.quote}"</p>
+                    <p className="text-gray-700 italic mb-4">&quot;{testimonial.quote}&quot;</p>
                     <div>
                       <p className="font-semibold text-[#0a2351]">{testimonial.author}</p>
                       <p className="text-gray-600 text-sm">{testimonial.position}</p>
