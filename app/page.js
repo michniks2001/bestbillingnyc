@@ -572,7 +572,7 @@ export default function Home() {
                     
                     <Button 
                       type="submit" 
-                      className="w-full bg-[#0a2351] hover:bg-[#0a2351] hover:translate-y-[2px] text-white py-3 rounded-md transition-all duration-300 font-medium"
+                      className="w-full bg-[#0a2351] hover:bg-[#0a2351] hover:translate-y-[2px] text-white py-3 rounded-md transition-all duration-300 font-medium cursor-pointer"
                       disabled={formStatus.isSubmitting}
                     >
                       {formStatus.isSubmitting ? "Sending..." : "Request Consultation"}
