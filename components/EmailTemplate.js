@@ -73,7 +73,7 @@ export const EmailTemplate = ({name, email, phone, message}) => {
                 borderTop: '1px solid #eee'
             }}>
                 <p style={{margin: '0'}}>
-                    © {new Date().getFullYear()} Best Billing NYC. All rights reserved.
+                    © {new Date().getFullYear()} Best Billing Co. All rights reserved.
                 </p>
             </div>
         </div>
