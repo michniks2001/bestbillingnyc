@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl font-semibold text-[#0a2351] mb-3">Introduction</h2>
             <p className="text-gray-700">
-              This Privacy Policy explains how Best Billing Co. ("we," "us," or "our") collects, uses, and shares information about you when you visit our website at bestbillingnyc.com ("Site"). 
+              This Privacy Policy explains how Best Billing Co. (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and shares information about you when you visit our website at bestbillingnyc.com (&quot;Site&quot;). 
               By using our Site, you agree to the collection, use, and sharing of your information as described in this Privacy Policy.
             </p>
           </section>
@@ -63,7 +63,7 @@ export default function PrivacyPolicy() {
               We use Google reCAPTCHA on our Site to protect our forms from spam and automated abuse. Google reCAPTCHA works by collecting hardware and software information, such as device and application data, and sending it to Google for analysis. The information collected in connection with your use of the service will be used to improve reCAPTCHA and for general security purposes. Google does not use this information for personalized advertising.
             </p>
             <p className="text-gray-700">
-              By using our contact form, you acknowledge and accept that Google's Privacy Policy (available at <a href="https://policies.google.com/privacy" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://policies.google.com/privacy</a>) and Terms of Service (available at <a href="https://policies.google.com/terms" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://policies.google.com/terms</a>) apply to your use of Google reCAPTCHA.
+              By using our contact form, you acknowledge and accept that Google&apos;s Privacy Policy (available at <a href="https://policies.google.com/privacy" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://policies.google.com/privacy</a>) and Terms of Service (available at <a href="https://policies.google.com/terms" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://policies.google.com/terms</a>) apply to your use of Google reCAPTCHA.
             </p>
           </section>
 
