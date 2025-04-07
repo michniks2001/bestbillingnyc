@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
@@ -620,6 +621,14 @@ export default function Home() {
             </div>
             <div className="mt-6 text-center text-sm">
               &copy; {new Date().getFullYear()} Best Billing Co. All rights reserved.
+              <div className="mt-2">
+                <Link 
+                  href="/privacy-policy" 
+                  className="text-[#0a2351] hover:underline transition-all duration-300"
+                >
+                  Privacy Policy
+                </Link>
+              </div>
             </div>
           </AnimateOnScroll>
         </div>
