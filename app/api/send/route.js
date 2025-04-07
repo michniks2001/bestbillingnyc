@@ -21,7 +21,7 @@ export async function POST(request) {
         // Validate reCAPTCHA token
         if (!recaptchaToken) {
             return NextResponse.json(
-                { error: "reCAPTCHA verification failed" }, 
+                { error: "reCAPTCHA verification required" }, 
                 { status: 400 }
             );
         }
@@ -43,26 +43,47 @@ export async function POST(request) {
             const recaptchaData = await recaptchaResponse.json();
             console.log("reCAPTCHA verification response:", recaptchaData);
             
-            // For v3, we should check the score, but for testing we'll be more lenient
+            // Strictly enforce reCAPTCHA verification
             if (!recaptchaData.success) {
                 console.warn("reCAPTCHA verification failed:", recaptchaData);
-                // Continue anyway for testing purposes
-                console.log("Proceeding despite reCAPTCHA failure (for testing only)");
+                return NextResponse.json(
+                    { error: "reCAPTCHA verification failed" }, 
+                    { status: 400 }
+                );
+            }
+            
+            // For reCAPTCHA v3, also check the score (0.0 to 1.0, where 1.0 is very likely a good interaction)
+            if (recaptchaData.score !== undefined && recaptchaData.score < 0.5) {
+                console.warn("reCAPTCHA score too low:", recaptchaData.score);
+                return NextResponse.json(
+                    { error: "Suspicious activity detected" }, 
+                    { status: 400 }
+                );
             }
         } catch (error) {
             console.error("Error verifying reCAPTCHA:", error);
-            // Continue anyway for testing purposes
-            console.log("Proceeding despite reCAPTCHA error (for testing only)");
+            return NextResponse.json(
+                { error: "Error verifying reCAPTCHA" }, 
+                { status: 500 }
+            );
         }
 
         // Log data for debugging
         console.log("Sending email with data:", { name, email, phone, message });
         
-        // Check if API key is available
+        // Check if API keys are available
         if (!process.env.RESEND_API_KEY) {
             console.error("RESEND_API_KEY is not defined");
             return NextResponse.json(
                 { error: "Email service configuration error" }, 
+                { status: 500 }
+            );
+        }
+        
+        if (!process.env.RECAPTCHA_SECRET_KEY) {
+            console.error("RECAPTCHA_SECRET_KEY is not defined");
+            return NextResponse.json(
+                { error: "reCAPTCHA configuration error" }, 
                 { status: 500 }
             );
         }

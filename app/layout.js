@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import CookieBanner from "@/components/CookieBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Best Billing Co.",
-  description: "",
+  description: "Professional medical billing services in NYC",
 };
 
 export default function RootLayout({ children }) {
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <CookieBanner />
       </body>
     </html>
   );

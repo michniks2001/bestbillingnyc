@@ -1,42 +1,79 @@
-// app/api/route.ts
+// app/api/verify/route.js
 
-import axios from "axios";
+import { NextResponse } from "next/server";
 
-export async function POST(req) {
-  if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({ message: "Only POST requests allowed" }),
-      { status: 405 },
-    );
-  }
-
-  const data = await req.json();
-  const { token } = data;
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-
-  if (!token) {
-    return new Response(JSON.stringify({ message: "Token not found" }), {
-      status: 405,
-    });
-  }
-
+export async function POST(request) {
   try {
-    const response = await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
-    );
+    const data = await request.json();
+    const { token } = data;
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
-    if (response.data.success) {
-      return new Response(JSON.stringify({ message: "Success" }), {
-        status: 200,
-      });
-    } else {
-      return new Response(JSON.stringify({ message: "Failed to verify" }), {
-        status: 405,
+    if (!secretKey) {
+      console.error("RECAPTCHA_SECRET_KEY is not defined");
+      return NextResponse.json(
+        { error: "reCAPTCHA configuration error" },
+        { status: 500 }
+      );
+    }
+
+    if (!token) {
+      return NextResponse.json(
+        { error: "reCAPTCHA token is required" },
+        { status: 400 }
+      );
+    }
+
+    // Verify reCAPTCHA token with Google
+    const recaptchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
+    const recaptchaResponse = await fetch(recaptchaVerifyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        secret: secretKey,
+        response: token
+      })
+    });
+
+    const recaptchaData = await recaptchaResponse.json();
+    
+    // Check verification result
+    if (!recaptchaData.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "reCAPTCHA verification failed",
+          details: recaptchaData['error-codes'] || [] 
+        },
+        { status: 400 }
+      );
+    }
+    
+    // For reCAPTCHA v3, also check the score
+    if (recaptchaData.score !== undefined) {
+      const score = recaptchaData.score;
+      const action = recaptchaData.action;
+      
+      // Return the score so the client can decide what to do
+      return NextResponse.json({
+        success: true,
+        score,
+        action,
+        timestamp: recaptchaData.challenge_ts
       });
     }
-  } catch (error) {
-    return new Response(JSON.stringify({ message: "Internal Server Error" }), {
-      status: 500,
+    
+    // For reCAPTCHA v2, just return success
+    return NextResponse.json({
+      success: true,
+      timestamp: recaptchaData.challenge_ts
     });
+  } catch (error) {
+    console.error("Error verifying reCAPTCHA:", error);
+    return NextResponse.json(
+      { error: "Error verifying reCAPTCHA" },
+      { status: 500 }
+    );
   }
 }

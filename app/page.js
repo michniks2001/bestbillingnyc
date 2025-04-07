@@ -219,6 +219,17 @@ export default function Home() {
   // Function to handle smooth scrolling
   const scrollToSection = (e, sectionId) => {
     e.preventDefault();
+    
+    // If sectionId is 'top', scroll to the top of the page
+    if (sectionId === 'top') {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+      return;
+    }
+    
+    // Otherwise scroll to the specified section
     const section = document.getElementById(sectionId);
     if (section) {
       // Apply a larger offset for the services section
@@ -279,7 +290,13 @@ export default function Home() {
       {/* Navigation Bar */}
       <nav className="bg-[#0a2351] text-white p-4 shadow-md sticky top-0 z-50">
         <div className="container mx-auto max-w-5xl flex justify-between items-center">
-          <div className="text-2xl font-bold">Best Billing Co.</div>
+          <a 
+            href="#" 
+            onClick={(e) => scrollToSection(e, 'top')} 
+            className="text-2xl font-bold cursor-pointer "
+          >
+            Best Billing Co.
+          </a>
           <div className="hidden md:flex space-x-6">
             <a 
               href="#services" 
