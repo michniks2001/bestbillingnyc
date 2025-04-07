@@ -35,7 +35,7 @@ export default function CookieBanner() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex-1">
             <p className="text-sm text-gray-700">
-              <span className="font-medium">Cookie Notice:</span> This website uses cookies, including those from Google reCAPTCHA, to enhance your experience and help protect our forms from spam. By continuing to use this site, you consent to our use of cookies in accordance with our{" "}
+              <span className="font-medium">Cookie Notice:</span> This website uses necessary cookies from Google reCAPTCHA to protect our contact form from spam and automated submissions. These cookies are essential for security purposes and proper site functionality. By continuing to use this site, you consent to our use of cookies in accordance with our{" "}
               <Link 
                 href="/privacy-policy" 
                 className="text-blue-600 hover:underline"
@@ -44,7 +44,7 @@ export default function CookieBanner() {
               </Link>.
             </p>
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex gap-2 shrink-0 mt-3 md:mt-0">
             <Button
               onClick={acceptCookies}
               className="bg-[#0a2351] hover:bg-[#0a2351] hover:translate-y-[2px] text-white transition-all duration-300 cursor-pointer"
