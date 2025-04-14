@@ -1,0 +1,20 @@
+/* Heading styles */
+.heading {
+  font-family: var(--font-inter);
+  font-weight: 600;
+}
+
+/* Body text styles */
+.body-text {
+  font-family: var(--font-geist-sans);
+  font-weight: 400;
+}
+
+/* Utility classes for font families */
+.font-heading {
+  font-family: var(--font-inter);
+}
+
+.font-body {
+  font-family: var(--font-geist-sans);
+}
